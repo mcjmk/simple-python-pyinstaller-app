@@ -28,7 +28,6 @@ pipeline {
         stage('Deliver') {
             steps {
                 sh 'wine pyinstaller --onefile sources/add2vals.py'
-                }
             }
             post {
                 success {

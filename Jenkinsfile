@@ -6,6 +6,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh 'python -m pip install --upgrade pyinstaller'
                 sh 'python -m py_compile sources/add2vals.py sources/calc.py'
                 stash(name: 'compiled-results', includes: 'sources/*.py*')
             }
@@ -21,8 +22,14 @@ pipeline {
             }
         }
         stage('Deliver') {
+            agent {
+                docker {
+                    image 'cdrx/pyinstaller-windows:python3'
+                    args "--entrypoint=''"
+                }
+            }
             steps {
-                sh "pyinstaller --onefile sources/add2vals.py"
+                sh 'wine pyinstaller --onefile sources/add2vals.py'
             }
             post {
                 success {

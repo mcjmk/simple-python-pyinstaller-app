@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'cdrx/pyinstaller-windows:python3'
+            args '-u root --privileged'
+        }
+    }
     options {
         skipStagesAfterUnstable()
     }
@@ -22,10 +27,7 @@ pipeline {
         }
         stage('Deliver') {
             steps {
-                script {
-                    docker.image('cdrx/pyinstaller-windows:python3').inside {
-                        sh 'wine pyinstaller --onefile sources/add2vals.py'
-                    }
+                sh 'wine pyinstaller --onefile sources/add2vals.py'
                 }
             }
             post {
